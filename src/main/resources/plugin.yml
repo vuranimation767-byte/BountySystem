@@ -1,0 +1,20 @@
+name: BountySystem
+version: '${version}'
+main: dev.bountysystem.BountyPlugin
+api-version: '26.3'
+description: Advanced player bounty system with GUI, economy and persistent storage.
+authors: [chara]
+libraries:
+  - org.xerial:sqlite-jdbc:3.53.4.0
+commands:
+  bounty:
+    description: Open the bounty GUI, manage bounty placements or administer the ledger.
+    usage: /bounty [list|place|cancel|admin]
+    permission: bounty.use
+permissions:
+  bounty.use:
+    description: Use the bounty command and GUI (list, place, cancel).
+    default: true
+  bounty.admin:
+    description: Reload the configuration and inspect/resolve stuck ledger transactions.
+    default: op

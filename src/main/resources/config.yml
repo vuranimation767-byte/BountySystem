@@ -1,0 +1,122 @@
+# BountySystem configuration.
+# Every value is validated on startup and on /bounty reload — errors are logged
+# and the old settings stay active until the file is fixed.
+
+economy:
+  # Payment mode:
+  #   VAULT — uses the standard Vault economy bridge. Requires the Vault plugin AND an
+  #           economy plugin registered with Vault (e.g. EssentialsX). If either is missing
+  #           the server logs a clear startup error and bounties stay disabled.
+  #   ITEMS — bounties are escrowed and paid in real inventory items (see below).
+  #           Recommended for test servers or servers without an economy plugin.
+  mode: ITEMS
+  # Only used when mode is ITEMS.
+  items:
+    # The item (material) used as currency.
+    currency: DIAMOND
+    # How much one item is worth in bounty amounts. Amounts must be a multiple of this.
+    item-value: 1.0
+
+limits:
+  # Smallest and largest allowed bounty reward.
+  min-amount: 1.0
+  max-amount: 100000000.0
+  # Minimum seconds between two placements by the same player (0 = no cooldown).
+  # In-memory only (session cooldown); it resets when the server restarts.
+  placement-cooldown-seconds: 5
+
+bounties:
+  # Whether the killer may claim bounties they placed themselves.
+  # false (default) keeps a self-placed bounty attached to the victim until ANOTHER
+  # player makes the kill; true pays it back to the killer on any eligible kill.
+  self-claim: false
+  cancellation:
+    # Fraction of the escrow returned when the placer cancels their own bounty (0.0…1.0).
+    # 1.0 = full refund (default). The remainder is forfeit — a server-side cancellation fee.
+    # Kill payouts always pay the full bounty to the killer regardless of this ratio.
+    refund-ratio: 1.0
+
+messages:
+  # Prefix used by nearly every chat message the plugin sends.
+  prefix: "&8[&6Bounty&8] &7"
+  no-permission: "&cYou do not have permission to do that."
+  players-only: "&cOnly players can use this command."
+  player-not-online: "&cThat player is not online right now."
+  placed: "&aPlaced a &6%amount% &abounty on &e%target%&a."
+  cancelled: "&aCancelled the bounty — &6%amount% &areturned to you."
+  bounty-not-found: "&cNone of your active bounties matches &e%id%&c."
+  ambiguous-id: "&cThe id &e%id% &cmatches several of your bounties — use the full id from your bounty list."
+  reload-success: "&aConfiguration reloaded — limits, cooldown, messages and GUI text are live."
+  reload-failed: "&cReload refused (invalid configuration): &f%reason%&c. The old settings stay active."
+  reload-economy-restart: "&eEconomy settings changed — they take effect after a server restart."
+  list-header: "&8&m――――――――&6 Active bounties &8&m――――――――"
+  list-empty: "&7There are no active bounties right now."
+  # %id% is the first 8 characters of the bounty id (enough for /bounty cancel <id>)
+  list-entry: "&7ID: &e%id% &8| &7Target: &e%target% &7- &6%amount% %currency% &7(by &e%placer%&7)"
+  admin-ledger-empty: "&aNo open ledger entries — nothing needs manual review."
+  admin-resolved: "&aLedger entry &e%id% &aresolved: &f%note%"
+  # Broadcast when someone claims a bounty (and receives the reward).
+  # Placeholders: %killer%, %victim%, %amount%
+  claim-broadcast: "&e%killer% claimed the &6%amount% &7bounty on &c%victim%&7!"
+
+gui:
+  # Menu titles. Placeholders: %target% only in detail.
+  titles:
+    main: "&8Bounty Board"
+    browse: "&8Active Bounties"
+    detail: "&8Bounties on %target%"
+    pick-target: "&8Choose a Target"
+    reward: "&8Set the Reward"
+    confirm: "&8Confirm Placement"
+    mine: "&8My Bounties"
+  # Button/anchor icons (materials). The target/killer heads are always player heads.
+  icons:
+    background: GRAY_STAINED_GLASS_PANE
+    browse: WRITABLE_BOOK
+    place: PLAYER_HEAD
+    mine: CHEST
+    close: BARRIER
+    back: ARROW
+    prev: ARROW
+    next: ARROW
+    confirm: LIME_DYE
+    cancel: RED_DYE
+    preset: EMERALD
+    custom: WRITABLE_BOOK
+  # Button captions.
+  names:
+    browse: "&6Active Bounties"
+    place: "&aPlace a Bounty"
+    mine: "&eMy Bounties"
+    close: "&cClose"
+    back: "&eBack"
+    prev: "&ePrevious page"
+    next: "&eNext page"
+    confirm: "&aConfirm"
+    cancel: "&cBack to Amount"
+    custom: "&eCustom Amount"
+  # Lore templates. Placeholders: %count%, %total%, %placer%, %target%, %amount%
+  lore:
+    target: "&7%count% placer(s) · &6%total%&7 total"
+    entry: "&7by &e%placer% &8· &6%amount%"
+    my-bounty: "&7target &e%target% &8· &6%amount%"
+    cancel-hint: "&cClick to cancel this bounty"
+    preset: "&7Reward: &6%amount%"
+    custom: "&7Choose your own reward"
+    info: "&7Target: &e%target%&7 · Reward: &6%amount%"
+  # Quick-pick reward amounts shown in the reward menu (the first five are used).
+  # Each must be inside limits.min-amount…limits.max-amount.
+  presets: [100, 250, 500, 1000, 2500]
+  prompts:
+    # Shown when the player clicks the Custom Amount book.
+    custom-amount: "&eType the reward amount in chat (e.g. 250), or type 'cancel' to go back."
+    # The word (case-insensitive) that aborts the chat prompt.
+    cancel-word: "cancel"
+    # Shown when the typed text is not a valid amount.
+    amount-invalid: "&cThat is not a valid amount — try again or type 'cancel'."
+    # Shown after the player types the cancel word.
+    amount-cancelled: "&cAmount entry cancelled - back to the bounty board."
+
+settings:
+  # Verbose startup logging to help during development.
+  debug: false

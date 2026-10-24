@@ -1,0 +1,5 @@
+# Normalize line endings so the project builds on Windows, Linux and macOS alike.
+* text=auto
+gradlew text eol=lf
+*.bat text eol=crlf
+*.jar binary
